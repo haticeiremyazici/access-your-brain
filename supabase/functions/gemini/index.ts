@@ -26,8 +26,11 @@ serve(async (req) => {
       );
     }
 
-    // Convert messages to Gemini format
-    const systemInstruction = messages.find((m: any) => m.role === "system");
+    // Extract system instruction from messages or use default
+    const clientSystem = messages.find((m: any) => m.role === "system");
+    const systemText = clientSystem?.content ||
+      "You are a helpful AI assistant. Keep answers clear and concise.";
+
     const chatMessages = messages
       .filter((m: any) => m.role !== "system")
       .map((m: any) => ({
@@ -43,9 +46,7 @@ serve(async (req) => {
       },
     };
 
-    if (systemInstruction) {
-      geminiBody.systemInstruction = { parts: [{ text: systemInstruction.content }] };
-    }
+    geminiBody.systemInstruction = { parts: [{ text: systemText }] };
 
     const response = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${GEMINI_API_KEY}`,
