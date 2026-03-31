@@ -1,18 +1,15 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
-    return new Response(null, { headers: corsHeaders });
+    return new Response("ok", { headers: corsHeaders });
   }
 
   try {
     const GEMINI_API_KEY = Deno.env.get("GEMINI_API_KEY");
+    console.log("GEMINI_API_KEY found:", !!GEMINI_API_KEY);
+    
     if (!GEMINI_API_KEY) {
       throw new Error("GEMINI_API_KEY is not configured");
     }
@@ -26,7 +23,6 @@ serve(async (req) => {
       );
     }
 
-    // Extract system instruction from messages or use default
     const clientSystem = messages.find((m: any) => m.role === "system");
     const systemText = clientSystem?.content ||
       "You are a helpful AI assistant. Keep answers clear and concise.";
@@ -47,6 +43,8 @@ serve(async (req) => {
     };
 
     geminiBody.systemInstruction = { parts: [{ text: systemText }] };
+
+    console.log("Calling Gemini API with model:", model);
 
     const response = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${GEMINI_API_KEY}`,
