@@ -8,7 +8,7 @@ AccessAI, Gemini 1.5 Flash modelini kullanarak bu karmaşık metinleri analiz ed
 
 ## Canlı Demo
 - **Yayın Linki:** *https://access-your-brain.lovable.app*
-- **Demo Video:** *(https://youtu.be/w2-7lIDRqKk)*
+- **Demo Video:** *https://youtu.be/w2-7lIDRqKk*
 
 ## Kullanılan Teknolojiler
 - **AI Model:** Google Gemini 1.5 Flash (Google AI Studio)
